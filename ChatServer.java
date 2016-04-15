@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 
 
-public ChatServer{
+public class ChatServer{
 	
 	public static void main(String[] args) {
 		DatagramSocket socket = null;
@@ -23,6 +23,10 @@ public ChatServer{
 				System.out.println("Server is sending: "+ out);
 				
 			}
+		}
+
+		catch(IOException e){
+			e.printStackTrace();
 		}
 
 	}
