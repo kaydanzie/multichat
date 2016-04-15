@@ -13,7 +13,7 @@ public ChatServer{
 			socket = new DatagramSocket();
 
 			while(true){
-				String out = "first message";
+				String out = "my first message";
 				buffer = out.getBytes();
 
 				InetAddress address = InetAddress.getByName("localhost");
