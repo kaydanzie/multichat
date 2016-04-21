@@ -18,6 +18,7 @@ public class ChatClient {
 
 			packet = new DatagramPacket(buffer, buffer.length);
 			socket.receive(packet);
+
 			String printOut = new String(buffer, 0, packet.getLength());
 			System.out.println(packet.getAddress()+ ": " + printOut);
 
