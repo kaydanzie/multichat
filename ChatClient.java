@@ -11,17 +11,18 @@ public class ChatClient {
 		byte[] buffer = new byte[256];
 
 		try {
-			socket = new MulticastSocket(6789);
-			InetAddress address = InetAddress.getByName("localhost");
+			socket = new MulticastSocket(4446);
+			InetAddress address = InetAddress.getByName("203.0.113.0");
 			socket.joinGroup(address);
 
 
-			while(true) {
-				packet = new DatagramPacket(buffer, buffer.length);
-				socket.receive(packet);
-				String printOut = new String(buffer, 0, packet.getLength());
-				System.out.println(packet.getAddress()+ ": "+ printOut);
-			}
+			packet = new DatagramPacket(buffer, buffer.length);
+			socket.receive(packet);
+			String printOut = new String(buffer, 0, packet.getLength());
+			System.out.println(packet.getAddress()+ ": " + printOut);
+
+			socket.leaveGroup(address);
+			socket.close();
 		}
 
 		catch(IOException e){

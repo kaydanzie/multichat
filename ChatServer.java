@@ -12,17 +12,17 @@ public class ChatServer{
 		try {
 			socket = new DatagramSocket();
 
-			while(true){
+			//while(true){
 				String out = "my first message";
 				buffer = out.getBytes();
 
-				InetAddress address = InetAddress.getByName("localhost");
-				packet = new DatagramPacket(buffer, buffer.length, address, 6789);
+				InetAddress address = InetAddress.getByName("203.0.113.0");
+				packet = new DatagramPacket(buffer, buffer.length, address, 4446);
 
 				socket.send(packet);
 				System.out.println("Server is sending: "+ out);
 				
-			}
+			//}
 		}
 
 		catch(IOException e){
