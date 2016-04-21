@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 
 public class ChatClient {
-	
+
 	public static void main(String[] args) {
 
 		MulticastSocket socket = null;
@@ -11,8 +11,8 @@ public class ChatClient {
 		byte[] buffer = new byte[256];
 
 		try {
-			socket = new MulticastSocket(4446);
-			InetAddress address = InetAddress.getByName("203.0.113.0");
+			socket = new MulticastSocket(8888);
+			InetAddress address = InetAddress.getByName("224.0.0.3");
 			socket.joinGroup(address);
 
 
