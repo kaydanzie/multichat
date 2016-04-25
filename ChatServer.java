@@ -6,9 +6,10 @@ import java.util.ArrayList;
 public class ChatServer{
 
 	public static void main(String[] args) {
+
+
 		MulticastSocket socket = null;
 		DatagramPacket packet= null;
-
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 
 
@@ -28,9 +29,8 @@ public class ChatServer{
 
 			while(true) {
 				socket.receive(packet); // blocks until a datagram is received
-				System.out.println("Received " + packet.getLength() + " bytes from " + packet.getAddress());
 				String printOut = new String(buffer, 0, packet.getLength());
-				System.out.println(printOut);
+				System.out.println(packet.getAddress() + ": " + printOut);
 				packet.setLength(buffer.length);
 			}
 
