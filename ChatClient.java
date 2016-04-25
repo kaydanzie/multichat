@@ -7,6 +7,8 @@ public class ChatClient {
 
 		MulticastSocket socket = null;
 		DatagramPacket packet = null;
+		DatagramPacket sendPack = null;
+		System.setProperty("java.net.preferIPv4Stack" , "true");
 
 		byte[] buffer = new byte[256];
 
@@ -14,6 +16,13 @@ public class ChatClient {
 			socket = new MulticastSocket(8888);
 			InetAddress address = InetAddress.getByName("224.0.0.3");
 			socket.joinGroup(address);
+
+			String test = "blah";//change to keyboard input
+			sendPack = new DatagramPacket(test.getBytes(), test.getBytes().length, address, 8888);
+			socket.send(sendPack);
+
+
+			
 
 
 			packet = new DatagramPacket(buffer, buffer.length);
