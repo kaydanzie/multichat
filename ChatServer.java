@@ -11,10 +11,9 @@ public class ChatServer{
 		MulticastSocket socket = null;
 		DatagramPacket packet= null;
 		System.setProperty("java.net.preferIPv4Stack" , "true");
+		String receiveName = null;
 
 
-		ArrayList<InetAddress> addresses = new ArrayList<>();
-		ArrayList<String> names = new ArrayList<>();
 
 		try {
 			byte[] buffer = new byte[256];
@@ -30,15 +29,15 @@ public class ChatServer{
 			while(true) {
 				socket.receive(packet); // blocks until a datagram is received
 				String printOut = new String(buffer, 0, packet.getLength());
-				System.out.println(packet.getAddress() + ": " + printOut);
+
+				if(printOut.contains(":")){
+					receiveName = printOut;
+				}
+				else{
+					System.out.println(receiveName+ " " + printOut);
+				}
 				packet.setLength(buffer.length);
 			}
-
-			//want to get address of packet sent by client
-			//addresses.add(packet.getAddress());
-
-			//socket.send(packet);
-			//System.out.println(addresses.get(0) + ": "+ out);
 
 
 		}
