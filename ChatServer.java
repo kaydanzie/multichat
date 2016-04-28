@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class ChatServer{
@@ -9,16 +9,23 @@ public class ChatServer{
 
 
 		MulticastSocket socket = null;
-		DatagramPacket packet= null;
+		DatagramPacket getPacket= null, sendPacket = null;
+		String newMessage = "";
 		System.setProperty("java.net.preferIPv4Stack" , "true");
-		String receiveName = null;
 
+
+
+		
+		// port number, screen name
+		Map<Integer, String> names = new HashMap<Integer, String>();
 
 
 		try {
 			byte[] buffer = new byte[256];
 
-			packet = new DatagramPacket(buffer, buffer.length);
+
+
+			getPacket = new DatagramPacket(buffer, buffer.length);
 
 
 
@@ -27,16 +34,23 @@ public class ChatServer{
 
 
 			while(true) {
-				socket.receive(packet); // blocks until a datagram is received
-				String printOut = new String(buffer, 0, packet.getLength());
+				socket.receive(getPacket);
+				String printOut = new String(buffer, 0, getPacket.getLength());
 
+				//if first message, add to hashmap
 				if(printOut.contains(":")){
-					receiveName = printOut;
+					names.put(getPacket.getPort(), printOut);
+					
 				}
 				else{
-					System.out.println(receiveName+ " " + printOut);
+					System.out.println(names.get(getPacket.getPort())+ " " + printOut);
+					newMessage = names.get(getPacket.getPort())+ " " + printOut;
+
+					//for ports/addresses not on this packet, send packet
+					sendPacket = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, getPacket.getAddress(), getPacket.getPort());
+					socket.send(sendPacket);
 				}
-				packet.setLength(buffer.length);
+				getPacket.setLength(buffer.length);
 			}
 
 

@@ -6,7 +6,7 @@ public class ChatClient {
 
 	public static void main(String[] args) {
 
-		MulticastSocket socket = null;
+		
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 
 		byte[] buffer = new byte[256];
@@ -17,9 +17,9 @@ public class ChatClient {
 
 
 			//sending
-			socket = new MulticastSocket(8888);
-			InetAddress address = InetAddress.getByName("224.0.0.3");
-			socket.joinGroup(address);
+			DatagramSocket socket = new DatagramSocket();
+			InetAddress address = InetAddress.getByName("localhost");
+
 
 
 			//set screen name
@@ -30,12 +30,9 @@ public class ChatClient {
 			socket.send(sendPack);
 
 
-			//need to make repeat
-			//need to resend sName before every message?
-			System.out.print("Enter message: ");
-			String userIn = key.nextLine();
-			sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
-			socket.send(sendPack);
+			
+
+			
 
 
 
@@ -45,6 +42,12 @@ public class ChatClient {
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
 			while(true){
+				System.out.print("Enter message: ");
+				String userIn = key.nextLine();
+				sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
+				socket.send(sendPack);
+
+				
 				socket.receive(packet);
 				String printOut = new String(buffer, 0, packet.getLength());
 				System.out.println(printOut);
