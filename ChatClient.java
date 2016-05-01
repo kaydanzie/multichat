@@ -11,7 +11,7 @@ public class ChatClient {
 
 		byte[] buffer = new byte[256];
 
-
+		DatagramPacket sendPack, packet;
 
 		try {
 
@@ -25,19 +25,21 @@ public class ChatClient {
 			Scanner key = new Scanner(System.in);
 			System.out.print("Enter screen name: ");
 			String sName = key.nextLine()+":";
-			DatagramPacket sendPack = new DatagramPacket(sName.getBytes(), sName.getBytes().length, address, 8888);
+			sendPack = new DatagramPacket(sName.getBytes(), sName.getBytes().length, address, 8888);
 			socket.send(sendPack);
 
+			int port = sendPack.getPort();
+
+			ClientRunnable runnable = new ClientRunnable(socket);
+
 			while(true){
-				ClientRunnable runnable = new ClientRunnable();
-				Thread t = new Thread(runnable);
-				t.start();
-
-
-				System.out.print("Enter message: ");
-				String userIn = key.nextLine();
-				sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
-				socket.send(sendPack);
+				
+				while(runnable.myThread.isAlive()){
+					System.out.print("Enter message: ");
+					String userIn = key.nextLine();
+					sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
+					socket.send(sendPack);
+				}
 
 			}
 

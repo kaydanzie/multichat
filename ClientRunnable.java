@@ -3,9 +3,13 @@ import java.net.*;
 
 public class ClientRunnable implements Runnable {
 
+	DatagramPacket packet;
+	Thread myThread;
+	DatagramSocket socket;
 
-	ClientRunnable() {
-		Thread myThread = new Thread(this, "thread object");
+	ClientRunnable(DatagramSocket socket) {
+		this.socket = socket;
+		myThread = new Thread(this, "thread object");
 		myThread.start();
 	}
 
@@ -14,19 +18,19 @@ public class ClientRunnable implements Runnable {
 		try {
 
 			byte[] buffer = new byte[256];
-			DatagramSocket socket = new DatagramSocket();
-
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
 			while(true){
+
+				packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
+				System.out.println();
 				String printOut = new String(buffer, 0, packet.getLength());
 				System.out.println(printOut);
 			}
 		}
 
 		catch(IOException e){
-			System.out.println("exception");
+			e.printStackTrace();
 		}
 		
 
