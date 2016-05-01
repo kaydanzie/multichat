@@ -10,10 +10,8 @@ public class ChatServer{
 
 		MulticastSocket socket = null;
 		DatagramPacket getPacket= null, sendPacket = null;
-		String newMessage = "";
+		String newMessage, screenName, joined, exited;
 		System.setProperty("java.net.preferIPv4Stack" , "true");
-
-
 
 		
 		// port number, screen name
@@ -34,11 +32,37 @@ public class ChatServer{
 				socket.receive(getPacket);
 				String printOut = new String(buffer, 0, getPacket.getLength());
 
-				//if first message, add to hashmap and arraylist
-				if(printOut.contains(":")){
+				//if first message, add to hashmap and arraylist, don't send
+				if(printOut.endsWith(":")){
 					names.put(getPacket.getPort(), printOut);
+					screenName = printOut.replace(':', ' ');
 					ports.add(getPacket.getPort());
+					joined = screenName + "has joined the chat room.";
+					System.out.println(joined);
+
+					//alert users of new client
+					for(int i=0; i<ports.size(); ++i){
+						if(ports.get(i) != getPacket.getPort()){
+							sendPacket = new DatagramPacket(joined.getBytes(), joined.getBytes().length, getPacket.getAddress(), ports.get(i));
+							socket.send(sendPacket);
+						}
+					}
 				}
+
+				else if(printOut.equalsIgnoreCase("exit")){
+					exited = names.get(getPacket.getPort());
+					exited = exited.replace(':', ' ');
+					exited += "has left the chat room";
+					for(int i=0; i<ports.size(); ++i){
+						if(ports.get(i) != getPacket.getPort()){
+							sendPacket = new DatagramPacket(exited.getBytes(), exited.getBytes().length, getPacket.getAddress(), ports.get(i));
+							socket.send(sendPacket);
+						}
+					}
+					sendPacket = new DatagramPacket("exit".getBytes(), "exit".getBytes().length, getPacket.getAddress(), getPacket.getPort());
+					socket.send(sendPacket);
+				}
+
 				else{
 					System.out.println(names.get(getPacket.getPort())+ " " + printOut);
 					newMessage = names.get(getPacket.getPort())+ " " + printOut;
@@ -50,12 +74,9 @@ public class ChatServer{
 							socket.send(sendPacket);
 						}
 					}
-					
 				}
 				getPacket.setLength(buffer.length);
 			}
-
-
 		}
 
 		catch(IOException e){

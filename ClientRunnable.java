@@ -5,33 +5,57 @@ public class ClientRunnable implements Runnable {
 
 	DatagramPacket packet;
 	Thread myThread;
+	boolean stopped;
 	DatagramSocket socket;
 
 	ClientRunnable(DatagramSocket socket) {
 		this.socket = socket;
-		myThread = new Thread(this, "thread object");
+		myThread = new Thread(this, "");
 		myThread.start();
+	}
+
+	public void stop(){
+		stopped = false;
 	}
 
 	public void run(){
 
-		try {
+		
 
-			byte[] buffer = new byte[256];
+		byte[] buffer = new byte[256];
 
-			while(true){
+		while(!stopped){
 
-				packet = new DatagramPacket(buffer, buffer.length);
-				socket.receive(packet);
-				System.out.println();
-				String printOut = new String(buffer, 0, packet.getLength());
-				System.out.println(printOut);
+			try {
+
+				while(true){
+
+					packet = new DatagramPacket(buffer, buffer.length);
+					socket.receive(packet);
+					System.out.println();
+					String printOut = new String(buffer, 0, packet.getLength());
+
+					if(printOut.startsWith("exit")){
+						stopped = true;
+						break;
+					}
+
+					else{
+						System.out.println(printOut);
+						System.out.print("Enter message: ");
+					}
+
+				}
+			}
+			catch(IOException e){
+				e.printStackTrace();
 			}
 		}
 
-		catch(IOException e){
-			e.printStackTrace();
-		}
+			
+		
+
+		
 		
 
 	}

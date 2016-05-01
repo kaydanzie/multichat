@@ -34,14 +34,16 @@ public class ChatClient {
 
 			while(true){
 				
-				while(runnable.myThread.isAlive()){
+				while(runnable.myThread.isAlive() && runnable.myThread.getState() != Thread.State.TERMINATED){
 					System.out.print("Enter message: ");
 					String userIn = key.nextLine();
 					sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
 					socket.send(sendPack);
 				}
 
-			}
+				System.exit(1);
+
+			 }
 
 		}
 
