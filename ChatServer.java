@@ -18,7 +18,7 @@ public class ChatServer{
 		
 		// port number, screen name
 		Map<Integer, String> names = new HashMap<Integer, String>();
-		ArrayList<Integer> addresses = new ArrayList<>();
+		ArrayList<Integer> ports = new ArrayList<>();
 
 
 		try {
@@ -37,20 +37,19 @@ public class ChatServer{
 				//if first message, add to hashmap and arraylist
 				if(printOut.contains(":")){
 					names.put(getPacket.getPort(), printOut);
-					addresses.add(getPacket.getPort());
+					ports.add(getPacket.getPort());
 				}
 				else{
 					System.out.println(names.get(getPacket.getPort())+ " " + printOut);
 					newMessage = names.get(getPacket.getPort())+ " " + printOut;
 
 					//for ports/addresses not on this packet, send packet
-					for(int i=0; i<addresses.size(); ++i){
-						if(addresses.get(i) != getPacket.getPort()){
-							sendPacket = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, getPacket.getAddress(), addresses.get(i));
+					for(int i=0; i<ports.size(); ++i){
+						if(ports.get(i) != getPacket.getPort()){
+							sendPacket = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, getPacket.getAddress(), ports.get(i));
 							socket.send(sendPacket);
 						}
 					}
-					//sendPacket = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, getPacket.getAddress(), getPacket.getPort());
 					
 				}
 				getPacket.setLength(buffer.length);
