@@ -29,13 +29,6 @@ public class ChatClient {
 			DatagramPacket sendPack = new DatagramPacket(sName.getBytes(), sName.getBytes().length, address, 8888);
 			socket.send(sendPack);
 
-
-			
-
-			
-
-
-
 			
 
 			//receiving
@@ -47,7 +40,7 @@ public class ChatClient {
 				sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
 				socket.send(sendPack);
 
-				
+
 				socket.receive(packet);
 				String printOut = new String(buffer, 0, packet.getLength());
 				System.out.println(printOut);
