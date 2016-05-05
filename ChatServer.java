@@ -5,77 +5,65 @@ import java.util.*;
 
 public class ChatServer{
 
-	public static void main(String[] args) {
+	
 
+	public static void main(String[] args) {
+		
+		System.setProperty("java.net.preferIPv4Stack" , "true");
 
 		MulticastSocket socket = null;
 		DatagramPacket getPacket= null, sendPacket = null;
-		String newMessage, screenName, joined, exited;
-		System.setProperty("java.net.preferIPv4Stack" , "true");
+		String screenName, joined, exited;
+		InetAddress address;
 
-		
 		// port number, screen name
 		Map<Integer, String> names = new HashMap<Integer, String>();
-		ArrayList<Integer> ports = new ArrayList<>();
 
-
+		
 		try {
-			byte[] buffer = new byte[256];
+			byte[] receiveBuffer = new byte[256];
+			byte[] sendBuffer = new byte[256];
 
-			getPacket = new DatagramPacket(buffer, buffer.length);
+			address = InetAddress.getByName("224.0.0.3");
+
+			getPacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
 
 			socket = new MulticastSocket(8888);
-			socket.joinGroup(InetAddress.getByName("224.0.0.3"));
+			socket.joinGroup(address);
 
 
 			while(true) {
 				socket.receive(getPacket);
-				String printOut = new String(buffer, 0, getPacket.getLength());
+				String received = new String(receiveBuffer, 0, getPacket.getLength());
 
 				//if first message, add to hashmap and arraylist, don't send
-				if(printOut.endsWith(":")){
-					names.put(getPacket.getPort(), printOut);
-					screenName = printOut.replace(':', ' ');
-					ports.add(getPacket.getPort());
+				if(received.endsWith(":")){
+					names.put(getPacket.getPort(), received);
+					screenName = received.replace(':', ' ');
 					joined = screenName + "has joined the chat room.";
-					System.out.println(joined);
+					
+					sendPacket = new DatagramPacket(joined.getBytes(), joined.getBytes().length, address, 8888);
+					socket.send(sendPacket);
 
-					//alert users of new client
-					for(int i=0; i<ports.size(); ++i){
-						if(ports.get(i) != getPacket.getPort()){
-							sendPacket = new DatagramPacket(joined.getBytes(), joined.getBytes().length, getPacket.getAddress(), ports.get(i));
-							socket.send(sendPacket);
-						}
-					}
 				}
 
-				else if(printOut.equalsIgnoreCase("exit")){
+				else if(received.equalsIgnoreCase("exit")){
 					exited = names.get(getPacket.getPort());
 					exited = exited.replace(':', ' ');
-					exited += "has left the chat room";
-					for(int i=0; i<ports.size(); ++i){
-						if(ports.get(i) != getPacket.getPort()){
-							sendPacket = new DatagramPacket(exited.getBytes(), exited.getBytes().length, getPacket.getAddress(), ports.get(i));
-							socket.send(sendPacket);
-						}
-					}
-					sendPacket = new DatagramPacket("exit".getBytes(), "exit".getBytes().length, getPacket.getAddress(), getPacket.getPort());
+					sendPacket = new DatagramPacket(exited.getBytes(), exited.getBytes().length);
+					socket.send(sendPacket);
+					sendPacket = new DatagramPacket("exit".getBytes(), "exit".getBytes().length);
 					socket.send(sendPacket);
 				}
 
-				else{
-					System.out.println(names.get(getPacket.getPort())+ " " + printOut);
-					newMessage = names.get(getPacket.getPort())+ " " + printOut;
-
-					//for ports/addresses not on this packet, send packet
-					for(int i=0; i<ports.size(); ++i){
-						if(ports.get(i) != getPacket.getPort()){
-							sendPacket = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, getPacket.getAddress(), ports.get(i));
-							socket.send(sendPacket);
-						}
-					}
+				else if(received.contains("has joined the chat room")){
+					System.out.println(received);
 				}
-				getPacket.setLength(buffer.length);
+
+				else{
+					System.out.println(names.get(getPacket.getPort())+ " " + received);
+				}
+				getPacket.setLength(receiveBuffer.length);
 			}
 		}
 
@@ -85,3 +73,6 @@ public class ChatServer{
 
 	}
 }
+
+
+

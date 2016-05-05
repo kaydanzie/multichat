@@ -6,10 +6,11 @@ public class ClientRunnable implements Runnable {
 	DatagramPacket packet;
 	Thread myThread;
 	boolean stopped;
-	DatagramSocket socket;
+	MulticastSocket socket;
+	InetAddress address;
 
-	ClientRunnable(DatagramSocket socket) {
-		this.socket = socket;
+	ClientRunnable(InetAddress address) {
+		this.address = address;
 		myThread = new Thread(this, "");
 		myThread.start();
 	}
@@ -27,6 +28,9 @@ public class ClientRunnable implements Runnable {
 		while(!stopped){
 
 			try {
+
+				socket = new MulticastSocket(8888);
+				socket.joinGroup(address);
 
 				while(true){
 
