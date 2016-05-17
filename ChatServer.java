@@ -61,7 +61,7 @@ public class ChatServer{
 				}
 
 				else{
-					System.out.println(names.get(getPacket.getPort())+ " " + received);
+					System.out.println(received);
 				}
 				getPacket.setLength(receiveBuffer.length);
 			}

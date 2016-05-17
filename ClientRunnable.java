@@ -44,6 +44,8 @@ public class ClientRunnable implements Runnable {
 						break;
 					}
 
+					
+
 					else{
 						System.out.println(printOut);
 						System.out.print("Enter message: ");
@@ -54,13 +56,7 @@ public class ClientRunnable implements Runnable {
 			catch(IOException e){
 				e.printStackTrace();
 			}
-		}
-
-			
-		
-
-		
-		
+		}	
 
 	}
 	
