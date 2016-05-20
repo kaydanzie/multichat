@@ -13,6 +13,8 @@ public class ChatClient {
 
 	private InetAddress address;
 
+	private String exitMessage;
+
 
 	public void run(){
 
@@ -36,10 +38,21 @@ public class ChatClient {
 			socket.send(sendPack);
 
 			while(true){
+
 				String userIn = key.nextLine();
-				userIn = sName + " "+ userIn;
-				sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
-				socket.send(sendPack);
+				if(userIn.equals("exit")){
+					userIn = sName + " "+ userIn;
+					sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
+					socket.send(sendPack);
+					System.exit(0);
+				}
+				else{
+					userIn = sName + " "+ userIn;
+					sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);
+					socket.send(sendPack);
+				}
+				
+				
 			}
 		}
 

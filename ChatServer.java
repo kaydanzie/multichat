@@ -16,9 +16,6 @@ public class ChatServer{
 		String screenName, joined, exited;
 		InetAddress address;
 
-		// port number, screen name
-		Map<Integer, String> names = new HashMap<Integer, String>();
-
 		
 		try {
 			byte[] receiveBuffer = new byte[256];
@@ -36,9 +33,8 @@ public class ChatServer{
 				socket.receive(getPacket);
 				String received = new String(receiveBuffer, 0, getPacket.getLength());
 
-				//if first message, add to hashmap and arraylist, don't send
+				//if don't send as is
 				if(received.endsWith(":")){
-					names.put(getPacket.getPort(), received);
 					screenName = received.replace(':', ' ');
 					joined = screenName + "has joined the chat room.";
 					
@@ -47,18 +43,13 @@ public class ChatServer{
 
 				}
 
-				else if(received.equalsIgnoreCase("exit")){
-					exited = names.get(getPacket.getPort());
-					exited = exited.replace(':', ' ');
-					sendPacket = new DatagramPacket(exited.getBytes(), exited.getBytes().length);
-					socket.send(sendPacket);
-					sendPacket = new DatagramPacket("exit".getBytes(), "exit".getBytes().length);
+				else if(received.endsWith(": exit")){
+					exited = received.replace(': exit', ' ');
+					exited += "has exited the chat room";
+					sendPacket = new DatagramPacket(exited.getBytes(), exited.getBytes().length, address, 8888);
 					socket.send(sendPacket);
 				}
 
-				else if(received.contains("has joined the chat room")){
-					System.out.println(received);
-				}
 
 				else{
 					System.out.println(received);
