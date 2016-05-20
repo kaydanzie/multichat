@@ -1,4 +1,7 @@
-# multichat
+# Multichat
+Kayla Ziegler
+
+
 Chat program using multicasting
 
 -Java files should compile using javac *.java
