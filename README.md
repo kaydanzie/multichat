@@ -4,6 +4,8 @@ Kayla Ziegler
 
 Chat program using multicasting
 
+## Program Instructions
+
 -Java files should compile using javac *.java
 
 -Start server with java ChatServer
