@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class ChatClient {
 
 
-
 	private byte[] buffer = new byte[256];
 
 	private DatagramPacket sendPack, packet;
@@ -15,16 +14,7 @@ public class ChatClient {
 	private InetAddress address;
 
 
-
-	// public void startChat(){
-
-		
-
-	// }
-
-
-
-	public void run() {
+	public void run(){
 
 		
 		System.setProperty("java.net.preferIPv4Stack" , "true");
@@ -46,7 +36,6 @@ public class ChatClient {
 			socket.send(sendPack);
 
 			while(true){
-				System.out.print("Enter message: ");
 				String userIn = key.nextLine();
 				userIn = sName + " "+ userIn;
 				sendPack = new DatagramPacket(userIn.getBytes(), userIn.getBytes().length, address, 8888);

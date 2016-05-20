@@ -36,17 +36,21 @@ public class ClientRunnable implements Runnable {
 
 					packet = new DatagramPacket(buffer, buffer.length);
 					socket.receive(packet);
-					System.out.println();
 					String printOut = new String(buffer, 0, packet.getLength());
+
+					
 
 					if(printOut.startsWith("exit")){
 						stopped = true;
 						break;
 					}
 
-					
+					else if(printOut.substring(printOut.length()-1, printOut.length()).equals(" ")){
+						//don't print
+					}
 
 					else{
+						System.out.println();
 						System.out.println(printOut);
 						System.out.print("Enter message: ");
 					}
