@@ -1,3 +1,11 @@
+/*
+ClientRunnable
+
+Starts thread that continuously receives messages on the same socket address as the Client that called the runnable
+In cases of a new client and an exiting client, the straight message from the user is not printed, instead it prints a modified message from the server
+Continues running until the Client program is terminated with an "exit" message by the user
+
+*/
 import java.io.*;
 import java.net.*;
 
@@ -5,7 +13,6 @@ public class ClientRunnable implements Runnable {
 
 	DatagramPacket packet;
 	Thread myThread;
-	boolean stopped;
 	MulticastSocket socket;
 	InetAddress address;
 
@@ -33,7 +40,9 @@ public class ClientRunnable implements Runnable {
 				String printOut = new String(buffer, 0, packet.getLength());
 
 
-				if(printOut.endsWith(":")){
+				//":" and ": exit" are the cases of a client joining and exiting respectively
+				//a modified message is sent by the server to the clients so the original user message shouldn't show
+				if(printOut.endsWith(":") || printOut.endsWith(": exit")){
 					//don't print blank messages or messages sent with enter key
 				}
 
